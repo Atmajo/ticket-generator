@@ -5,11 +5,10 @@ import { ReloadIcon } from "@radix-ui/react-icons";
 import axios from "axios";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Cookies from "js-cookie";
-import useAuth from "@/provider/useAuth";
 
-const page = () => {
+const Page = () => {
   const [form, setForm] = useState({
     email: "",
     password: "",
@@ -17,8 +16,6 @@ const page = () => {
   const [loading, setLoading] = useState(false);
 
   const router = useRouter();
-
-  const { LoginUser } = useAuth();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setForm({
@@ -35,7 +32,9 @@ const page = () => {
         .post("/api/sign-in", form)
         .then((data) => {
           console.log(data);
-          LoginUser(data.data.token);
+          Cookies.set("user", data.data.token, {
+            expires: 14,
+          });
           Cookies.set("id", data.data.id);
           router.push("/");
         })
@@ -48,6 +47,14 @@ const page = () => {
       setLoading(false);
     }
   };
+  
+  const hasAccess = Cookies.get("user") as string;
+  
+  useEffect(() => {
+    if (!hasAccess) {
+      router.push("/sign-in");
+    }
+  }, [hasAccess]);
 
   return (
     <div className="min-h-screen bg-gray-100 py-6 flex flex-col justify-center sm:py-12">
@@ -123,4 +130,4 @@ const page = () => {
   );
 };
 
-export default page;
+export default Page;

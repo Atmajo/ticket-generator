@@ -3,17 +3,20 @@
 import { Button } from "@/components/ui/button";
 import { ReloadIcon } from "@radix-ui/react-icons";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 import { v4 as uuid } from "uuid";
 
-const page = () => {
+const Page = () => {
   const [form, setForm] = useState({
     id: "",
     email: "",
     password: "",
   });
   const [loading, setLoading] = useState(false);
-  
+
+  const router = useRouter();
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setForm({
       ...form,
@@ -21,18 +24,18 @@ const page = () => {
       id: uuid(),
     });
   };
-  
-  const handleSubmit = () => {
+
+  const handleSubmit = async () => {
     try {
       setLoading(true);
-      console.log(form);
-      fetch("/api/sign-up", {
+      await fetch("/api/sign-up", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify(form),
       });
+      router.push("/sign-in");
     } catch (error) {
       console.error(error);
     } finally {
@@ -87,7 +90,7 @@ const page = () => {
                 </div>
                 <div className="flex justify-between">
                   {loading ? (
-                    <Button disabled>
+                    <Button disabled className="relative">
                       <ReloadIcon className="mr-2 h-4 w-4 animate-spin" />
                       Please Wait
                     </Button>
@@ -114,4 +117,4 @@ const page = () => {
   );
 };
 
-export default page;
+export default Page;

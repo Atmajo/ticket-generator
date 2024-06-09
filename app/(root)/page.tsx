@@ -12,13 +12,13 @@ import Cookies from "js-cookie";
 
 export default function Home() {
   const [form, setForm] = useState({
-    id: window.sessionStorage.getItem("id"),
+    id: Cookies.get("id"),
     name: "",
     membershipId: "",
     event: "",
     qr: "",
   });
-  
+
   const { toast } = useToast();
 
   const [loading, setLoading] = useState(false);
@@ -55,10 +55,10 @@ export default function Home() {
     } catch (err) {
       console.error(err);
     }
-    
+
     setLoading(false);
   };
-  
+
   return (
     <div className="flex flex-col justify-center items-center mx-auto min-h-screen">
       <div className="flex flex-col p-5 border border-black rounded-lg gap-3">

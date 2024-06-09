@@ -5,11 +5,21 @@ import { useToast } from "@/components/ui/use-toast";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import Cookies from "js-cookie";
+import { useRouter } from "next/navigation";
 
-const page = () => {
+const Page = () => {
   const [data, setData] = useState([]);
 
   const { toast } = useToast();
+
+  const router = useRouter();
+  const hasAccess = Cookies.get("user") as string;
+  
+  useEffect(() => {
+    if (!hasAccess) {
+      router.push("/sign-in");
+    }
+  }, [hasAccess]);
 
   useEffect(() => {
     axios
@@ -25,7 +35,7 @@ const page = () => {
         });
       });
   }, []);
-
+  
   return (
     <div className="flex flex-col min-h-screen px-2 gap-10">
       <h1 className="text-3xl font-semibold mt-7">Tickets</h1>
@@ -45,4 +55,4 @@ const page = () => {
   );
 };
 
-export default page;
+export default Page;

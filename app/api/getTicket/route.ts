@@ -7,7 +7,10 @@ export async function POST(req: NextRequest, res: NextResponse) {
   await connect();
   const body = await req.json();
 
-  const ticketData = await mongoose.models.ticket.find({
+  const Ticket =
+    mongoose.models.ticket || mongoose.model("ticket", ticketSchema);
+
+  const ticketData = await Ticket.find({
     id: body.id,
   });
 
